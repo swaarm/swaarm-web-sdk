@@ -32,7 +32,7 @@ window._SwaarmSdk = {
         });
     },
 
-    attribute: function () {
+    land: function () {
         if (!this.initialized) {
             throw new Error("SDK not initialized");
         }
@@ -344,8 +344,8 @@ window.SwaarmSdk = {
         window._SwaarmSdk.initialize(trackingUrl, token, initCallback, attributionCallback, flushFrequency, debug);
     },
 
-    attribute: function () {
-        window._SwaarmSdk.attribute();
+    land: function () {
+        window._SwaarmSdk.land();
     },
 
     getAttributionData: function () {
@@ -360,4 +360,3 @@ window.SwaarmSdk = {
         window._SwaarmSdk.associateUserId(userId);
     }
 }
-
