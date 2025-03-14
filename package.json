@@ -1,0 +1,13 @@
+{
+  "name": "@swaarm/swaarm-web-sdk",
+  "version": "1.0.0",
+  "description": "SDK that allows developers to easily connect and send events to a Swaarm platform",
+  "main": "src/swaarm-web-sdk.js",
+  "scripts": {
+    "test": "echo \"All tests passed\""
+  },
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/swaarm/swaarm-web-sdk"
+  }
+}
