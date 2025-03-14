@@ -1,6 +1,6 @@
 {
   "name": "@swaarm/swaarm-web-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SDK that allows developers to easily connect and send events to a Swaarm platform",
   "main": "src/swaarm-web-sdk.js",
   "scripts": {

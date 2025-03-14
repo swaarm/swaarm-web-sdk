@@ -321,7 +321,7 @@ window._SwaarmSdk = {
     },
 
     _associateUserId: function(userId) {
-        const url = new URL(this.trackingUrl + '/asscoiate-user');
+        const url = new URL(this.trackingUrl + '/associate-user');
         url.searchParams.append("idfv", this.idfv);
         url.searchParams.append("user_id", userId);
         this._log(`Associating ${userId} with ${this.idfv}`);
