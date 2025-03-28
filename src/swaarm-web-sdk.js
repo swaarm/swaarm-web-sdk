@@ -8,10 +8,7 @@ window._SwaarmSdk = {
         if (trackingUrl == null || !trackingUrl.startsWith("http")) {
             throw new Error("Invalid tracking url received: " + trackingUrl)
         }
-        if (trackingUrl.slice(-1) !== '/') {
-            trackingUrl = trackingUrl + '/';
-        }
-        this.trackingUrl = trackingUrl
+        this.trackingUrl = trackingUrl.replace(/\/$/, "");
         this.token = token;
         this.attributionCallback = attributionCallback;
         this.flushFrequency = flushFrequency;
@@ -20,6 +17,10 @@ window._SwaarmSdk = {
         this.queryParams = this._getQueryParams();
         this.idfv = this._initializeIdfv();
         this._getClickId(clickId => {
+            if (!clickId) {
+                console.error("Couldn't initialize SDK");
+                return;
+            }
             this.clickId = clickId;
             localStorage.setItem("SWAARM_CLICK_ID", clickId);
             this.attributionData = this._readAttributionDataFromStorage();
@@ -40,6 +41,7 @@ window._SwaarmSdk = {
             this._addEvent(null, this.clickId);
         }
         this._addEvent('__open');
+        this._sendEvents();
     },
 
     _start: function () {
@@ -48,7 +50,7 @@ window._SwaarmSdk = {
         }
         this._sendEvents();
         if (this.flushFrequency > 0) {
-            setInterval(this._sendEvents, this.flushFrequency * 1000);
+            setInterval(() => this._sendEvents(), this.flushFrequency * 1000);
         }
     },
 
@@ -67,7 +69,7 @@ window._SwaarmSdk = {
                 this._log("Sending events: " + payload);
                 const xhr = new XMLHttpRequest();
                 const self = this;
-                xhr.open("POST", this.trackingUrl + "sdk", true);
+                xhr.open("POST", this.trackingUrl + "/sdk", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.setRequestHeader("Authorization", `Bearer ${this.token}`);
                 xhr.onreadystatechange = function () {
@@ -198,6 +200,7 @@ window._SwaarmSdk = {
             }
         }
         req.open("GET", url);
+        req.setRequestHeader("Authorization", `Bearer ${this.token}`);
         req.send();
     },
 
@@ -212,37 +215,19 @@ window._SwaarmSdk = {
         const params = this._getQueryParams();
         const parts = [];
         if (params.utm_campaign) {
-            parts.push("campaign=" + params.utm_campaign)
+            parts.push("campaign_id=" + params.utm_campaign)
         }
         if (params.utm_adset) {
-            parts.push("adset=" + params.utm_adset)
+            parts.push("adset_id=" + params.utm_adset)
         }
         if (params.utm_ad) {
-            parts.push("ad=" + params.utm_ad)
+            parts.push("ad_id=" + params.utm_ad)
         }
         if (params.utm_source) {
             parts.push("site=" + params.utm_source)
         }
         if (params.utm_term) {
             parts.push("term=" + params.utm_term)
-        }
-        if (params.swcid) {
-            parts.push("campaign_id=" + params.swcid)
-        }
-        if (params.swasid) {
-            parts.push("adset_id=" + params.swasid)
-        }
-        if (params.swaid) {
-            parts.push("ad_id=" + params.swasid)
-        }
-        if (params.swc) {
-            parts.push("campaign_id=" + params.swc)
-        }
-        if (params.swas) {
-            parts.push("adset_id=" + params.swas)
-        }
-        if (params.swa) {
-            parts.push("ad_id=" + params.swa)
         }
         if (params.gclid) {
             parts.push("pub_click_id=" + params.gclid)
@@ -357,6 +342,6 @@ window.SwaarmSdk = {
     },
 
     associateUserId: function(userId) {
-        window._SwaarmSdk.associateUserId(userId);
+        window._SwaarmSdk._associateUserId(userId);
     }
 }
